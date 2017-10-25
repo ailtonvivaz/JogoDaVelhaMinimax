@@ -49,13 +49,13 @@ class Tabuleiro(object):
 
                         # maximiza
                         if max:
-                            if filho.valor >= self.valor or self.valor is None:
+                            if filho.valor > self.valor or self.valor is None:
                                 self.valor = filho.valor
                                 self.prox_pos = (i, j)
 
                         # minimiza
                         else:
-                            if filho.valor <= self.valor or self.valor is None:
+                            if filho.valor < self.valor or self.valor is None:
                                 self.valor = filho.valor
                                 self.prox_pos = (i, j)
 
@@ -80,7 +80,7 @@ class Tabuleiro(object):
                self.mapa[2][0] == self.mapa[1][1] == self.mapa[0][2] == self.vez.peca
 
     def isFinished(self):
-        return self.ganhador != '' or self.vazio == 0
+        return self.ganhador is not None or self.vazio == 0
 
     def avaliar(self):
         if self.verifica_linhas() or \

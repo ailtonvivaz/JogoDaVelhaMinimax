@@ -2,4 +2,4 @@
 
 Para executar o jogo, basta clonar o repositório e rodar com o comando:
 
-`python jogo.py`
+`python main.py`
