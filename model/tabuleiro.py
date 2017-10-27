@@ -1,20 +1,23 @@
 import copy
+
 from jogador import Jogador
-from node import Node
 
 
 # tabuleiro do jogo da velha
 class Tabuleiro(object):
-
-    def __init__(self, jogador):
+    def __init__(self, jogador, alfabeta):
         self.mapa = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
         self.filhos = []
         self.ganhador = None
-        self.valor = None
         self.vez = jogador
         self.vazio = 9
         self.prox_pos = None
-        self.node = Node()
+        self.total_filhos = 0
+
+        self.alfabeta = alfabeta
+        self.valor = None
+        self.alfa = -10
+        self.beta = 10
 
     def apaga_filhos(self):
         self.filhos = []
@@ -29,7 +32,7 @@ class Tabuleiro(object):
         print '\nvazio:', self.vazio, '\n'
 
     def jogar(self, lin, col):
-        if self.vazio > 0 and self.mapa[lin][col] == " ":
+        if not self.isFinished() and self.mapa[lin][col] == " ":
             self.vazio -= 1
             self.mapa[lin][col] = self.vez.peca
             self.avaliar()
@@ -58,8 +61,15 @@ class Tabuleiro(object):
                     for j in range(3):
                         if self.mapa[i][j] == ' ':
                             filho = copy.deepcopy(copia)
+                            filho.alfa = self.alfa
+                            filho.beta = self.beta
+
+                            self.total_filhos += 1
                             filho.jogar(i, j)
+
                             filho.gera_filhos()
+
+                            self.total_filhos += filho.total_filhos
                             # self.filhos.append(filho)
 
                             max = self.vez == Jogador.COMPUTADOR
@@ -68,6 +78,15 @@ class Tabuleiro(object):
                                         not max and filho.valor < self.valor):
                                 self.valor = filho.valor
                                 self.prox_pos = (i, j)
+
+                                if self.alfabeta:
+                                    if max and self.valor > self.alfa:
+                                        self.alfa = self.valor
+                                    elif not max and self.valor < self.beta:
+                                        self.beta = self.valor
+
+                                    if self.alfa >= self.beta:
+                                        return
 
     def verifica_linhas(self):
         return self.mapa[0][0] == self.mapa[0][1] == self.mapa[0][2] == self.vez.peca or \
