@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from model import Tabuleiro
 from model import Jogador
+from model import Tabuleiro
+
 
 if __name__ == '__main__':
 
@@ -18,8 +19,13 @@ if __name__ == '__main__':
             tabuleiro.gera_filhos()
             pos = tabuleiro.prox_pos
 
-        print pos, '\n\n'
-        tabuleiro.jogar(pos[0], pos[1])
-        tabuleiro.imprimir()
+        if isinstance(pos, tuple):
+            print pos, '\n\n'
+            if tabuleiro.jogar(pos[0], pos[1]):
+                tabuleiro.valor = None
+                tabuleiro.filhos = []
+                tabuleiro.imprimir()
+            else:
+                print 'Posicao {} já está ocupada\n\n'.format(pos)
 
     print 'Ganhador foi {}'.format(tabuleiro.ganhador.peca)
